@@ -154,15 +154,58 @@ function getSchoolName($id){
         }
         $io = null;
 }
-function getCurrentUserPermissions($id){
+function getPermissionParents(){
+    $data = [];
+    try {
+    $io = new PDO("mysql:host=".DB_HOST.";dbname=".DB."", DB_USER, DB_PASS);
+    $io->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $stmt = $io->prepare("SELECT DISTINCT `parent`, `parent_icon` FROM `permissions` WHERE  `parent` IS NOT NULL AND `parent_icon` != ''");
+    $stmt->execute();
+    $stmt->setFetchMode(PDO::FETCH_ASSOC);
+    while($result = $stmt->fetchAll()){
+    array_push($data, $result);
+    }
+    return $data[0];
+    }
+    catch(PDOException $e) {
+    return "Error: " . $e->getMessage();
+    }
+    $io = null;
+}
+function getParentPermissions($parent){
+    $data = [];
+    try {
+    $io = new PDO("mysql:host=".DB_HOST.";dbname=".DB."", DB_USER, DB_PASS);
+    $io->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $stmt = $io->prepare("SELECT `id`,`name`,`icon` FROM `permissions` WHERE `parent` = '$parent'");
+    $stmt->execute();
+    $stmt->setFetchMode(PDO::FETCH_ASSOC);
+    while($result = $stmt->fetchAll()){
+    array_push($data, $result);
+    }
+    return $data[0];
+    }
+    catch(PDOException $e) {
+    return "Error: " . $e->getMessage();
+    }
+    $io = null;
+}
+function getCurrentUserPermissions($user_id){
+    $data = [];
     try {
         $io = new PDO("mysql:host=".DB_HOST.";dbname=".DB."", DB_USER, DB_PASS);
         $io->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $stmt = $io->prepare("SELECT `name`, `access` FROM `user_types` WHERE `access_code` = '$id'");
+        $stmt = $io->prepare("SELECT `perm` FROM `user_permisions` WHERE `user` = '$user_id'");
         $stmt->execute();
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
-        $result = $stmt->fetchAll();
-        return $result[0];
+            while($result = $stmt->fetchAll()){
+                array_push($data, $result);
+            }
+            $pm = [];
+            foreach( $data[0] as $k=>$v):
+                array_push($pm, $v['perm']);
+            endforeach;
+            return $pm;
         }
         catch(PDOException $e) {
         return "Error: " . $e->getMessage();

@@ -13,80 +13,38 @@
           <i class="mdi mdi-bookmark-check text-success nav-profile-badge"></i>
         </a>
       </li>
-      <li class="nav-item">
+      <!-- <li class="nav-item">
         <a class="nav-link" href="/sys/access/dashboard">
           <span class="menu-title">Dashboard</span>
           <i class="mdi mdi-home menu-icon"></i>
         </a>
-      </li>
+      </li> -->
+      <?php  
+      $loop = 0;
+        foreach( getPermissionParents() as $pp ):
+      ?>
       <li class="nav-item">
-        <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
-          <span class="menu-title">Administration</span>
+        <a class="nav-link" data-toggle="collapse" href="#ui-basic<?=$loop?>" aria-expanded="false" aria-controls="ui-basic">
+          <span class="menu-title"><?=$pp['parent']?></span>
           <i class="menu-arrow"></i>
-          <i class="mdi mdi-crosshairs-gps menu-icon"></i>
+          <i class="mdi <?=$pp['parent_icon']?>"></i>
         </a>
-        <div class="collapse" id="ui-basic">
+        <div class="collapse" id="ui-basic<?=$loop?>">
           <ul class="nav flex-column sub-menu">
-            <li class="nav-item"> <a class="nav-link" href="/sys/access/requests">Delivery Requests</a></li>
-            <li class="nav-item"> <a class="nav-link" href="/sys/access/realtime">In Transit</a></li>
+          <?php foreach( getParentPermissions($pp['parent']) as $inner ): 
+          if(in_array($inner['id'], $user_permissions)){
+            ?>
+            <li class="nav-item"> <a class="nav-link" href="?to=<?=$inner['name']?>"><?=$inner['name']?></a></li>
+            <?php 
+          }
+            endforeach;
+            ?>
           </ul>
         </div>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/sys/access/dashboard">
-          <span class="menu-title">Riders & Drivers</span>
-          <i class="mdi mdi-contacts menu-icon"></i>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/sys/access/dashboard">
-          <span class="menu-title">Warehouses</span>
-          <i class="mdi mdi-format-list-bulleted menu-icon"></i>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/sys/access/dashboard">
-          <span class="menu-title">Statistics</span>
-          <i class="mdi mdi-chart-bar menu-icon"></i>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/sys/access/dashboard">
-          <span class="menu-title">Reports</span>
-          <i class="mdi mdi-table-large menu-icon"></i>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" data-toggle="collapse" href="/sys/access/dashboard" aria-expanded="false" aria-controls="general-pages">
-          <span class="menu-title">Settings</span>
-          <i class="menu-arrow"></i>
-          <i class="mdi mdi-medical-bag menu-icon"></i>
-        </a>
-        <div class="collapse" id="general-pages">
-          <ul class="nav flex-column sub-menu">
-            <li class="nav-item"> <a class="nav-link" href="/sys/access/dashboard"> Server info </a></li>
-            <li class="nav-item"> <a class="nav-link" href="/sys/access/dashboard"> System settings </a></li>
-            <li class="nav-item"> <a class="nav-link" href="/sys/access/dashboard"> Add users </a></li>
-            <li class="nav-item"> <a class="nav-link" href="/sys/access/dashboard"> Misc </a></li>
-          </ul>
-          </div>
-      </li>
-      <li class="nav-item sidebar-actions">
-        <span class="nav-link">
-          <div class="border-bottom">
-            <h6 class="font-weight-normal mb-3">Offices</h6>                
-          </div>
-          <button class="btn btn-block btn-lg btn-gradient-primary mt-4">+ Add an office</button>
-          <div class="mt-4">
-            <div class="border-bottom">
-              <p class="text-secondary">Parcel Categories</p>                  
-            </div>
-            <ul class="gradient-bullet-list mt-4">
-              <li>Builky</li>
-              <li>Lightweight</li>
-            </ul>
-          </div>
-        </span>
-      </li>
+          <?php 
+          $loop++;
+          endforeach;
+          ?>
     </ul>
   </nav>

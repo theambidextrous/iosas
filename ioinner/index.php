@@ -5,7 +5,7 @@ session_start();
 require_once("../iosys/inf.ionf.conf.php");
 //get user permissions
 $user_data = getCurrentUserDetails($_SESSION['USRID']);
-$user_permissions = getCurrentUserPermissions(getUserType($_SESSION['USRID']))['access'];
+$user_permissions = getCurrentUserPermissions($_SESSION['USRID']);
 $school_name = getSchoolName($user_data['school_id']);
 ?>
 <!DOCTYPE html>
